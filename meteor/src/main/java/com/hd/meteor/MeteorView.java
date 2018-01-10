@@ -8,9 +8,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -36,52 +34,43 @@ public class MeteorView extends SurfaceView implements SurfaceHolder.Callback, R
 
     private MeteorHandler meteorHandler;
 
+    private MeteorConfig config;
+
     public MeteorView(Context context) {
         super(context);
-        init();
     }
 
     public MeteorView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public MeteorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void addConfig(MeteorConfig config) {
+        this.config = config;
         init();
     }
 
-    public void addConfig(){
-
-    }
-
     private void init() {
-        this.setZOrderOnTop(true);
-        getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        holder = getHolder();
-        holder.addCallback(this);
+        if(holder==null) {
+            this.setZOrderOnTop(true);
+            getHolder().setFormat(PixelFormat.TRANSLUCENT);
+            holder = getHolder();
+            holder.addCallback(this);
+        }
         meteorHandler = new MeteorHandler(getContext());
-        backgroundDrawable = ContextCompat.getDrawable(getContext(), R.drawable.meteor_background);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        Log.d(TAG,"onAttachedToWindow");
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        Log.d(TAG,"onDetachedFromWindow");
+        meteorHandler.setConfig(config);
+        backgroundDrawable = config.getNightSkyBackgroundDrawable();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         backgroundRect = new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight());
-        meteorHandler.setMeteorRect(new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight() / 3));
-        meteorHandler.setMaxDrawRange(getMeasuredWidth(),getMeasuredHeight());
+        meteorHandler.setMeteorRect(new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight() / 4));
+        meteorHandler.setMaxDrawRange(getMeasuredWidth(), getMeasuredHeight());
     }
 
     @Override

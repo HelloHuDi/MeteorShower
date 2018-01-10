@@ -15,6 +15,8 @@ public class MeteorHandler implements MeteorDrawCallback {
 
     private Context context;
 
+    private MeteorConfig config;
+
     private List<Meteor> meteorList;
 
     private Rect meteorRect;
@@ -25,7 +27,11 @@ public class MeteorHandler implements MeteorDrawCallback {
 
     public MeteorHandler(Context context) {
         meteorList = new ArrayList<>();
-        this.context=context;
+        this.context = context;
+    }
+
+    public void setConfig(MeteorConfig config) {
+        this.config = config;
     }
 
     public void setMeteorRect(Rect rect) {
@@ -39,7 +45,7 @@ public class MeteorHandler implements MeteorDrawCallback {
 
     public void touchComplete(float x, float y) {
         synchronized (object) {
-            meteorList.add(new Meteor(meteorRect, x, y, maxWidth, maxHeight, this));
+            meteorList.add(new Meteor(meteorRect, x, y, maxWidth, maxHeight, config, this));
         }
     }
 
