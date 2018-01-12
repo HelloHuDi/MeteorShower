@@ -4,8 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by hd on 2018/1/8 .
@@ -13,20 +12,51 @@ import java.util.List;
  */
 public class MeteorHandler implements MeteorDrawCallback {
 
+    enum MeteorState {
+
+        /**
+         * when the touch is completed, the symbol begins to create the symbol
+         */
+        CREATE_SYMBOL,
+
+        /**
+         * moving symbols to the starry sky
+         */
+        MOVE_SYMBOL,
+
+        /**
+         * the symbol is converted into a star
+         */
+        CREATE_STARS,
+
+        /**
+         * the star is converted into a meteor
+         */
+        CREATE_METEOR,
+
+        /**
+         * a meteor slid through
+         */
+        MOVE_METEOR,
+
+        /**
+         * disappearing in the specified range or
+         * currently without the need to create a meteor
+         */
+        METEOR_LOST
+
+    }
+
     private Context context;
 
     private MeteorConfig config;
 
-    private List<Meteor> meteorList;
+    private final Vector<Meteor> meteorList;
 
-    private Rect meteorRect;
-
-    private int maxWidth, maxHeight;
-
-    private final Object object = new Object();
+    private Rect meteorRect, canvasRect;
 
     public MeteorHandler(Context context) {
-        meteorList = new ArrayList<>();
+        meteorList = new Vector<>();
         this.context = context;
     }
 
@@ -38,31 +68,24 @@ public class MeteorHandler implements MeteorDrawCallback {
         meteorRect = rect;
     }
 
-    public void setMaxDrawRange(int maxWidth, int maxHeight) {
-        this.maxWidth = maxWidth;
-        this.maxHeight = maxHeight;
+    public void setMaxDrawRange(Rect rect) {
+        this.canvasRect = rect;
     }
 
     public void touchComplete(float x, float y) {
-        synchronized (object) {
-            meteorList.add(new Meteor(meteorRect, x, y, maxWidth, maxHeight, config, this));
-        }
+        meteorList.addElement(new Meteor(meteorRect, canvasRect, x, y, config, this));
     }
 
     public void draw(Canvas canvas) {
-        synchronized (object) {
+        synchronized (meteorList) {
             for (Meteor meteor : meteorList) {
                 meteor.draw(canvas);
             }
-            object.notify();
         }
     }
 
     @Override
     public void drawComplete(Meteor meteor) {
-        synchronized (object) {
-            meteorList.remove(meteor);
-            object.notify();
-        }
+        meteorList.removeElement(meteor);
     }
 }

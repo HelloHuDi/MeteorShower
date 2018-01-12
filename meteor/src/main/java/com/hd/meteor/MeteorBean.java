@@ -10,7 +10,7 @@ import android.support.v7.graphics.Palette;
 import android.util.Log;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -20,13 +20,13 @@ import java.util.List;
  */
 public class MeteorBean implements Serializable {
 
-    private List<Drawable> iconList;
+    private LinkedList<Drawable> iconList;
 
-    private List<Integer> colorList;
+    private LinkedList<Integer> colorList;
 
     public MeteorBean(Context context) {
-        iconList = new ArrayList<>();
-        colorList = new ArrayList<>();
+        iconList = new LinkedList<>();
+        colorList = new LinkedList<>();
         int a = 28;
         while (a > 0) {
             try {
@@ -40,22 +40,26 @@ public class MeteorBean implements Serializable {
         generateMeteorColor();
     }
 
+    private int index = 0;
+
     private void generateMeteorColor() {
-        for (Drawable drawable : iconList) {
-            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                public void onGenerated(Palette palette) {
-                    colorList.add(palette.getDominantColor(Color.WHITE));
-                }
-            });
-        }
+        if (index > iconList.size() - 1) return;
+        Drawable drawable = iconList.get(index);
+        final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            public void onGenerated(Palette palette) {
+                colorList.add(palette.getVibrantColor(Color.WHITE));
+                index += 1;
+                generateMeteorColor();
+            }
+        });
     }
 
     public List<Drawable> getIconList() {
         return iconList;
     }
 
-    public void setIconList(List<Drawable> iconList) {
+    public void setIconList(LinkedList<Drawable> iconList) {
         this.iconList = iconList;
     }
 
@@ -64,5 +68,9 @@ public class MeteorBean implements Serializable {
         colorList.clear();
         iconList.add(icon);
         generateMeteorColor();
+    }
+
+    public List<Integer> getColorList() {
+        return colorList;
     }
 }

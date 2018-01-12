@@ -1,6 +1,7 @@
 package com.hd.meteor.test
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import com.hd.meteor.MeteorBean
 import com.hd.meteor.MeteorConfig
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val meteorConfig=MeteorConfig(this)
         meteorConfig.setMeteorBean(MeteorBean(this))
+        meteorConfig.nightSkyBackgroundDrawable=ContextCompat.getDrawable(this,R.drawable.meteor_background1)
         meteor.addConfig(meteorConfig)
     }
 }

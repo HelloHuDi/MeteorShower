@@ -70,7 +70,7 @@ public class MeteorView extends SurfaceView implements SurfaceHolder.Callback, R
         super.onSizeChanged(w, h, oldw, oldh);
         backgroundRect = new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight());
         meteorHandler.setMeteorRect(new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight() / 4));
-        meteorHandler.setMaxDrawRange(getMeasuredWidth(), getMeasuredHeight());
+        meteorHandler.setMaxDrawRange(new Rect(0,0,getMeasuredWidth(), getMeasuredHeight()));
     }
 
     @Override
