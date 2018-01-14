@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Meteor</string>
+    <string name="query_music">query user all musics</string>
 </resources>

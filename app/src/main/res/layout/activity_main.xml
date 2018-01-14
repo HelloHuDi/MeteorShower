@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,5 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-
-</android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/selectMusic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:onClick="selectMusic"
+        android:src="@drawable/select_music"
+        app:borderWidth="2dp"
+        app:elevation="5dp"
+        app:fabSize="normal"
+        app:pressedTranslationZ="10dp"
+        app:rippleColor="@color/colorAccent"/>
+</android.support.design.widget.CoordinatorLayout>

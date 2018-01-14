@@ -54,9 +54,9 @@ public class MeteorView extends SurfaceView implements SurfaceHolder.Callback, R
     }
 
     private void init() {
-        if(holder==null) {
-            this.setZOrderOnTop(true);
+        if (holder == null) {
             getHolder().setFormat(PixelFormat.TRANSLUCENT);
+            getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
             holder = getHolder();
             holder.addCallback(this);
         }
@@ -70,7 +70,7 @@ public class MeteorView extends SurfaceView implements SurfaceHolder.Callback, R
         super.onSizeChanged(w, h, oldw, oldh);
         backgroundRect = new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight());
         meteorHandler.setMeteorRect(new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight() / 4));
-        meteorHandler.setMaxDrawRange(new Rect(0,0,getMeasuredWidth(), getMeasuredHeight()));
+        meteorHandler.setMaxDrawRange(new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight()));
     }
 
     @Override
@@ -94,6 +94,8 @@ public class MeteorView extends SurfaceView implements SurfaceHolder.Callback, R
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (config.getCreateCallback()!= null)
+                    config.getCreateCallback().create();
                 break;
             case MotionEvent.ACTION_UP:
                 meteorHandler.touchComplete(event.getX(), event.getY());

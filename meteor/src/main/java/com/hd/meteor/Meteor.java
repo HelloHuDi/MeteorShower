@@ -156,7 +156,6 @@ public class Meteor implements ValueAnimator.AnimatorUpdateListener {
 
     private void drawCompleted() {
         meteorState = MeteorHandler.MeteorState.METEOR_LOST;
-        Log.d("tag", "cancel meteor :" + canvasRect.contains(meteorSlideRect));
         callback.drawComplete(this);
     }
 
@@ -168,18 +167,23 @@ public class Meteor implements ValueAnimator.AnimatorUpdateListener {
                 break;
             case MOVE_SYMBOL:
                 animatorValue = (float) animation.getAnimatedValue();
-                float changeValue = (1 - animatorValue * 0.5f) / animatorValue / 6f;
+                float changeValue = (1 - animatorValue * 0.2f) / animatorValue / 6f;
                 float pointY = touchPointY + animatorValue * (highLinesY - touchPointY);
                 iconRect.set((int) (touchPointX - centerCircleRadius * changeValue), (int) (pointY - centerCircleRadius * changeValue), //
                              (int) (touchPointX + centerCircleRadius * changeValue), (int) (pointY + centerCircleRadius * changeValue));
                 break;
             case CREATE_METEOR:
             case MOVE_METEOR:
-                animatorValue = (float) animation.getAnimatedValue();
-                if (animatorValue > create_meteor_time && meteorState == MeteorHandler.MeteorState.CREATE_METEOR) {
-                    meteorState = MeteorHandler.MeteorState.MOVE_METEOR;
+                if(!canvasRect.contains((int) meteorStartX,(int) meteorStartY)){
+                    meteorAnimator.cancelAnimator();
+                    drawCompleted();
+                }else {
+                    animatorValue = (float) animation.getAnimatedValue();
+                    if (animatorValue > create_meteor_time && meteorState == MeteorHandler.MeteorState.CREATE_METEOR) {
+                        meteorState = MeteorHandler.MeteorState.MOVE_METEOR;
+                    }
+                    createMeteor();
                 }
-                createMeteor();
                 break;
             case METEOR_LOST:
                 animatorValue = (float) animation.getAnimatedValue();
@@ -221,33 +225,37 @@ public class Meteor implements ValueAnimator.AnimatorUpdateListener {
     }
 
     public void draw(Canvas canvas) {
-        switch (meteorState) {
-            case CREATE_SYMBOL:
-                drawWaveCircle(canvas);
-                break;
-            case MOVE_SYMBOL:
-                drawIcon(iconDrawable, canvas, 255, iconRect);
-                break;
-            case CREATE_STARS:
-                drawIcon(iconDrawable, canvas, 255, iconRect);
-                mainPaint.setAlpha(255);
-                mainPaint.setColor(meteorColor);
-                canvas.drawCircle(iconRect.centerX(), iconRect.centerY(), (iconRect.bottom - iconRect.top) / 2, mainPaint);
-                break;
-            case CREATE_METEOR:
-            case MOVE_METEOR:
-                mainPaint.setStyle(Paint.Style.FILL);
-                LinearGradient linearGradient = new LinearGradient(meteorStartX, meteorStartY, iconRect.centerX(), iconRect.centerY(),//
-                                                                   new int[]{Color.TRANSPARENT, Color.BLACK, Color.WHITE, meteorColor}, //
-                                                                   new float[]{0, 0.2f, 0.4f, 1}, Shader.TileMode.CLAMP);
-                mainPaint.setShader(linearGradient);
-                canvas.drawPath(meteorPath, mainPaint);
-                canvas.drawCircle(iconRect.centerX(), iconRect.centerY(), (iconRect.bottom - iconRect.top) / 2, mainPaint);
-                int alpha = (int) (255 * (1 - animatorValue));
-                if (alpha > 100) {
-                    drawIcon(iconDrawable, canvas, alpha, iconRect);
-                }
-                break;
+        try {
+            switch (meteorState) {
+                case CREATE_SYMBOL:
+                    drawWaveCircle(canvas);
+                    break;
+                case MOVE_SYMBOL:
+                    drawIcon(iconDrawable, canvas, 255, iconRect);
+                    break;
+                case CREATE_STARS:
+                    drawIcon(iconDrawable, canvas, 255, iconRect);
+                    mainPaint.setAlpha(255);
+                    mainPaint.setColor(meteorColor);
+                    canvas.drawCircle(iconRect.centerX(), iconRect.centerY(), (iconRect.bottom - iconRect.top) / 2, mainPaint);
+                    break;
+                case CREATE_METEOR:
+                case MOVE_METEOR:
+                    mainPaint.setStyle(Paint.Style.FILL);
+                    LinearGradient linearGradient = new LinearGradient(meteorStartX, meteorStartY, iconRect.centerX(), iconRect.centerY(),//
+                                                                       new int[]{Color.TRANSPARENT, Color.BLACK, Color.WHITE, meteorColor}, //
+                                                                       new float[]{0, 0.2f, 0.4f, 1}, Shader.TileMode.CLAMP);
+                    mainPaint.setShader(linearGradient);
+                    canvas.drawPath(meteorPath, mainPaint);
+                    canvas.drawCircle(iconRect.centerX(), iconRect.centerY(), (iconRect.bottom - iconRect.top) / 2, mainPaint);
+                    int alpha = (int) (255 * (1 - animatorValue));
+                    if (alpha > 100) {
+                        drawIcon(iconDrawable, canvas, alpha, iconRect);
+                    }
+                    break;
+            }
+        }catch (Exception e){
+            Log.e("tag", "meteor draw error :"+e);
         }
     }
 

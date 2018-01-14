@@ -4,7 +4,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 /**
@@ -16,7 +15,6 @@ public class MeteorAnimator {
     private ValueAnimator valueAnimator;
 
     public void cancelAnimator() {
-        Log.d("tag", "cancel animator ");
         if (valueAnimator != null)
             valueAnimator.cancel();
         valueAnimator = null;

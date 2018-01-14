@@ -16,6 +16,8 @@ public class MeteorConfig {
 
     private Double meteorSlideAngle =45d;
 
+    private MeteorCreateCallback createCallback;
+
     public MeteorConfig(Context context) {
         nightSkyBackgroundDrawable = ContextCompat.getDrawable(context.getApplicationContext(), R.drawable.night_sky_background);
     }
@@ -41,14 +43,11 @@ public class MeteorConfig {
         return meteorSlideAngle;
     }
 
-    private void setMeteorSlideAngle(Double meteorSlideAngle) {
-        if (meteorSlideAngle > 90 && meteorSlideAngle <= 180) {
-            meteorSlideAngle = 180 - meteorSlideAngle;
-        } else if (meteorSlideAngle > 180 && meteorSlideAngle <= 270) {
-            meteorSlideAngle = meteorSlideAngle - 180;
-        } else if (meteorSlideAngle > 270) {
-            meteorSlideAngle = 360 - meteorSlideAngle;
-        }
-        this.meteorSlideAngle = meteorSlideAngle;
+    public MeteorCreateCallback getCreateCallback() {
+        return createCallback;
+    }
+
+    public void setCreateCallback(MeteorCreateCallback createCallback) {
+        this.createCallback = createCallback;
     }
 }
