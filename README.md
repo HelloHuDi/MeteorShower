@@ -4,7 +4,9 @@
 
 ## Play games while playing music
 
-<img src="art/meteor_shower.gif" width="300px" height="500px"/> <img src="art/screen2.png" width="300px" height="500px"/> <img src="art/screen1.png" width="300px" height="500px"/> 
+<img src="art/meteor_shower.gif" width="300px" height="500px"/> 
+
+<img src="art/screen2.png" width="300px" height="500px"/> <img src="art/screen1.png" width="300px" height="500px"/> 
 
 ## Inspiration comes from the WeChat public game
 
