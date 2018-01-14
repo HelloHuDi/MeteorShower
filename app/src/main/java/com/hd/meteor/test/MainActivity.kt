@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback {
 
     private var dialog: BottomSheetDialog? = null
 
+    private var createMeteorCount=0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
@@ -60,6 +62,7 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback {
         meteorConfig.nightSkyBackgroundDrawable = ContextCompat.getDrawable(this, R.drawable.meteor_background1)
         meteorConfig.createCallback = this
         meteor.addConfig(meteorConfig)
+        updateCount()
         addAdapter()
         checkPermission()
     }
@@ -163,12 +166,19 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback {
 
     override fun create() {
         playing.set(true)
+        createMeteorCount++
         if (!musicUtil.isPlaying) {
             if (musicPath.isNullOrEmpty())
                 musicUtil.playDefaultMusic()
             else
                 musicUtil.playMusic(musicPath)
         }
+        runOnUiThread { updateCount() }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateCount() {
+        create_count.text = resources.getString(R.string.create_meteor_count) + " :\n" + createMeteorCount
     }
 
     fun selectMusic(view: View?) {

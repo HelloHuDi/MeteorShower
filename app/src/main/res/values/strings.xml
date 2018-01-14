@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Meteor</string>
     <string name="query_music">query user all musics</string>
+    <string name="create_meteor_count">CREATE METEOR COUNT</string>
 </resources>

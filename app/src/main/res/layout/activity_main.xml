@@ -13,6 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <TextView
+        android:id="@+id/create_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:textColor="@android:color/white"
+        android:lineSpacingExtra="10dp"
+        android:text="@string/create_meteor_count"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/selectMusic"
         android:layout_width="wrap_content"
