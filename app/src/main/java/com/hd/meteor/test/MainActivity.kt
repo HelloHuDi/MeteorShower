@@ -57,14 +57,18 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback {
         window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_main)
+        showMeteor()
+        updateCount()
+        addAdapter()
+        checkPermission()
+    }
+
+    private fun showMeteor() {
         val meteorConfig = MeteorConfig(this)
         meteorConfig.setMeteorBean(MeteorBean(this))
         meteorConfig.nightSkyBackgroundDrawable = ContextCompat.getDrawable(this, R.drawable.meteor_background1)
         meteorConfig.createCallback = this
         meteor.addConfig(meteorConfig)
-        updateCount()
-        addAdapter()
-        checkPermission()
     }
 
     private var contentView: RelativeLayout? = null
@@ -114,7 +118,6 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback {
         return commonAdapter
     }
 
-
     private fun checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -155,7 +158,7 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback {
             if (!playing.get()) {
                 musicUtil.stopPlayMusic()
             }
-        }, 1000, 1000)
+        }, 2000, 1000)
     }
 
     override fun onStop() {

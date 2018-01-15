@@ -87,5 +87,6 @@ public class MeteorHandler implements MeteorDrawCallback {
     @Override
     public void drawComplete(Meteor meteor) {
         meteorList.removeElement(meteor);
+        meteor=null;
     }
 }

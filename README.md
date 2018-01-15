@@ -2,6 +2,10 @@
 
 ## The hand of God, creates a meteor shower that belongs to you
 
+## Scan the QRcode to download demo
+
+<img src="art/download_demo.png"/> 
+
 ## Play music while playing games, support the selection of local music
 
 <img src="art/meteor_shower.gif" width="300px" height="500px"/> 

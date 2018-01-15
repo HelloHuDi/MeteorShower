@@ -48,6 +48,7 @@ public class MusicUtil {
     public void playMusic(String path) {
         try {
             Log.d("tag","current path :"+path);
+            if(isPlaying())stopPlayMusic();
             player = new MediaPlayer();
             player.setDataSource(context, Uri.parse(path));
             player.prepare();
@@ -56,6 +57,9 @@ public class MusicUtil {
         } catch (IOException e) {
             Log.e("tag","play music error :"+e);
             playDefaultMusic();
+        }catch (NullPointerException e){
+            Log.e("tag","play music error :"+e);
+            playMusic(path);
         }
     }
 
