@@ -2,7 +2,7 @@
 
 ## The hand of God, creates a meteor shower that belongs to you
 
-## Scan the QRcode to download demo
+## using mobile browser scan the QRcode to download demo
 
 <img src="art/download_demo.png"/> 
 

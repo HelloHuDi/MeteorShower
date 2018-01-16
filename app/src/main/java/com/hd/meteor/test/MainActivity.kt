@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
 
     private fun addAdapter() {
         contentView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_music_list, null) as RelativeLayout
-        rvMusics = contentView!!.findViewById(R.id.rvMusics)
+        rvMusics = contentView!!.findViewById<RecyclerView>(R.id.rvMusics)
         rvMusics!!.layoutManager = LinearLayoutManager(this)
         rvMusics!!.itemAnimator = DefaultItemAnimator()
         rvMusics!!.adapter = commonAdapter()
