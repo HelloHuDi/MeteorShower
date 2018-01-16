@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Meteor</string>
-    <string name="query_music">query user all musics</string>
+    <string name="query_music">This app needs access to your music list so you can select music while playing games.</string>
     <string name="create_meteor_count">CREATE METEOR COUNT</string>
 </resources>
