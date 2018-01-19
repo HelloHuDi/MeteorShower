@@ -2,10 +2,12 @@ package com.hd.meteor.test
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Service
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.SystemClock
+import android.os.Vibrator
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -16,10 +18,15 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.ViewSwitcher
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.hd.meteor.MeteorBean
 import com.hd.meteor.MeteorConfig
 import com.hd.meteor.MeteorCreateCallback
@@ -48,11 +55,19 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
 
     private var musicPath: String? = null
 
+    private var imagePath: String? = null
+
     private var rvMusics: RecyclerView? = null
 
     private var dialog: BottomSheetDialog? = null
 
     private var createMeteorCount = 0
+
+    private var rotateAnimation: RotateAnimation? = null
+
+    private val options = RequestOptions().circleCrop()
+
+    private val vib by lazy { getSystemService(Service.VIBRATOR_SERVICE) as Vibrator }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +75,8 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
         window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_main)
+        Glide.with(this).asBitmap().load(R.drawable.run).apply(options).into(image)
+        createAlbumImageAnimator()
         showMeteor()
         setTextSwitcher()
         updateCount()
@@ -67,10 +84,21 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
         checkPermission()
     }
 
+    private fun createAlbumImageAnimator() {
+        rotateAnimation?.cancel()
+        rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, //
+                0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        rotateAnimation!!.duration = 15000
+        rotateAnimation!!.repeatCount = Animation.INFINITE
+        rotateAnimation!!.interpolator = LinearInterpolator()
+        image.animation = rotateAnimation
+        rotateAnimation!!.start()
+    }
+
     private fun setTextSwitcher() {
         create_count.inAnimation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
         create_count.outAnimation = AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
-        create_count.setFactory(mFactory)
+        create_count.setFactory(textViewFactory)
         create_count.setCurrentText(resources.getString(R.string.create_meteor_count) + " :\n" + createMeteorCount)
     }
 
@@ -123,6 +151,8 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
             override fun onItemClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int) {
                 musicUtil.stopPlayMusic()
                 musicPath = musicList[position].path
+                imagePath = musicList[position].album_art
+                Glide.with(this@MainActivity).asBitmap().load(imagePath).apply(options).into(image)
                 hideBottomSheet()
             }
         })
@@ -146,17 +176,19 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-    }
-
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             AppSettingsDialog.Builder(this).build().show()
         }
     }
 
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        queryAllMusic()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            createAlbumImageAnimator()
             checkPermission()
         }
     }
@@ -191,6 +223,7 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
 
     override fun onStop() {
         super.onStop()
+        rotateAnimation?.cancel()
         timer?.cancel()
         musicUtil.stopPlayMusic()
     }
@@ -205,6 +238,18 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
                 musicUtil.playMusic(musicPath)
         }
         runOnUiThread { updateCount() }
+        vibrate()
+    }
+
+    private var isVibrating = false
+
+    private fun vibrate() {
+        if (isVibrating) {
+            vib.cancel()
+            isVibrating = false
+        }
+        vib.vibrate(30)
+        isVibrating = true
     }
 
     @SuppressLint("SetTextI18n")
@@ -224,11 +269,7 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
         }
     }
 
-    /**
-     * The [android.widget.ViewSwitcher.ViewFactory] used to create [android.widget.TextView]s that the
-     * [android.widget.TextSwitcher] will switch between.
-     */
-    private val mFactory = ViewSwitcher.ViewFactory {
+    private val textViewFactory = ViewSwitcher.ViewFactory {
         // Create a new TextView
         val t = TextView(this@MainActivity)
         t.gravity = Gravity.START
