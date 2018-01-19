@@ -10,7 +10,6 @@ import android.os.SystemClock
 import android.os.Vibrator
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -41,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 import kotlin.concurrent.timerTask
 
-class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.PermissionCallbacks {
+class MainActivity : BaseActivity(), MeteorCreateCallback, EasyPermissions.PermissionCallbacks {
 
     private val RESULT_CODE = 100
 
@@ -71,28 +70,13 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
-        window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_main)
         Glide.with(this).asBitmap().load(R.drawable.run).apply(options).into(image)
-        createAlbumImageAnimator()
         showMeteor()
         setTextSwitcher()
         updateCount()
         addAdapter()
         checkPermission()
-    }
-
-    private fun createAlbumImageAnimator() {
-        rotateAnimation?.cancel()
-        rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, //
-                0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-        rotateAnimation!!.duration = 15000
-        rotateAnimation!!.repeatCount = Animation.INFINITE
-        rotateAnimation!!.interpolator = LinearInterpolator()
-        image.animation = rotateAnimation
-        rotateAnimation!!.start()
     }
 
     private fun setTextSwitcher() {
@@ -188,7 +172,6 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-            createAlbumImageAnimator()
             checkPermission()
         }
     }
@@ -203,7 +186,19 @@ class MainActivity : AppCompatActivity(), MeteorCreateCallback, EasyPermissions.
 
     override fun onResume() {
         super.onResume()
+        createAlbumImageAnimator()
         setTimer()
+    }
+
+    private fun createAlbumImageAnimator() {
+        rotateAnimation?.cancel()
+        rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, //
+                0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        rotateAnimation!!.duration = 15000
+        rotateAnimation!!.repeatCount = Animation.INFINITE
+        rotateAnimation!!.interpolator = LinearInterpolator()
+        image.animation = rotateAnimation
+        rotateAnimation!!.start()
     }
 
     private fun setTimer() {

@@ -64,11 +64,14 @@ public class MusicUtil {
     }
 
     public void stopPlayMusic() {
-        if (player != null) {
-            player.stop();
-            player.release();
+        try {
+            if (player != null) {
+                player.stop();
+                player.release();
+            }
+        }finally {
+            player = null;
         }
-        player = null;
     }
 
     private String[] queryMusic = new String[]{BaseColumns._ID,//
