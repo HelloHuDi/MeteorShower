@@ -233,7 +233,7 @@ class MainActivity : BaseActivity(), MeteorCreateCallback, EasyPermissions.Permi
                 musicUtil.playMusic(musicPath)
         }
         runOnUiThread { updateCount() }
-        vibrate()
+//        vibrate()
     }
 
     private var isVibrating = false

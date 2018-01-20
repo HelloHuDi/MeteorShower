@@ -1,4 +1,4 @@
-# MeteorShower [![](https://img.shields.io/badge/demo-v1.0-blue.svg)](https://github.com/HelloHuDi/MeteorShower/raw/master/app/release/app-release.apk) 
+# MeteorShower [![](https://img.shields.io/badge/demo-v2.0-blue.svg)](https://github.com/HelloHuDi/MeteorShower/raw/master/app/release/app-release.apk) 
 
 ## The hand of God, creates a meteor shower that belongs to you
 
